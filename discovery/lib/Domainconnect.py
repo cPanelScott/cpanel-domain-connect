@@ -14,7 +14,7 @@ def discovery( domain ):
 
 @app.route("/v2/domainTemplates/providers/<string:providerid>/services/<string:serviceid>")
 def template( providerid, serviceid ):
-    return Response(json.dumps( get_template( providerid, serviceid ), sort_keys=True, indent=4, separators=(",", ": ") ), mimetype="application/json")
+    return Response(json.dumps( get_template( providerid, serviceid ).template, sort_keys=True, indent=4, separators=(",", ": ") ), mimetype="application/json")
 
 def fetchzone_records( domain ):
     zone_json = subprocess.check_output(["whmapi1", "--output=json", "dumpzone", "domain=%s" % ( domain )])
@@ -39,6 +39,7 @@ def load_discovery( domain ):
         "providerDisplayName": "cPanel DNS Provider (MAKE CONFIGURABLE)",
         "urlAPI": "https://%s:2087/domainconnect" % ( request.host ),
         "nameServers": nameservers,
+        "urlSyncUX": "https://%s:2083/3rdparty/domainconnect_authorization" % ( request.host ),
     }
     return document
 '''

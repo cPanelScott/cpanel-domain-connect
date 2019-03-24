@@ -9,7 +9,20 @@ def get_template( providerid, serviceid ):
       continue
 
     f = open( directory + "/" + filename )
-    template = json.loads( f.read() )
-    if template["providerId"] == providerid and template["serviceId"] == serviceid:
+    template_json = f.read()
+    template = Template( template_json )
+    if template.template["providerId"] == providerid and template.template["serviceId"] == serviceid:
       return template
 
+class Template:
+  def __init__(self, template_json):
+    self.template = json.loads( template_json )
+
+  def is_signed_required(self):
+    if self.template.has_key("syncPubKeyDomain") and self.template["syncPubKeyDomain"]:
+      return True
+    else:
+      return False
+
+  def groups(self):
+    return set( map( lambda x: x['groupId'], self.template["records"]) )

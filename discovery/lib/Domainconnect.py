@@ -1,6 +1,7 @@
 from flask import Flask, Response, request
 import subprocess
 import json
+from domainconnect.templates import get_template
 app = Flask(__name__)
 
 @app.route("/v2/<domain>/settings")
@@ -10,6 +11,10 @@ def discovery( domain ):
         return "TODO this is a 404\n"
 
     return Response(json.dumps( domain, sort_keys=True, indent=4, separators=(",", ": ") ), mimetype="application/json")
+
+@app.route("/v2/domainTemplates/providers/<string:providerid>/services/<string:serviceid>")
+def template( providerid, serviceid ):
+    return Response(json.dumps( get_template( providerid, serviceid ), sort_keys=True, indent=4, separators=(",", ": ") ), mimetype="application/json")
 
 def fetchzone_records( domain ):
     zone_json = subprocess.check_output(["whmapi1", "--output=json", "dumpzone", "domain=%s" % ( domain )])
@@ -32,7 +37,7 @@ def load_discovery( domain ):
         "providerId": "cpanel.net",
         "providerName": "cPanel L.L.C.",
         "providerDisplayName": "cPanel DNS Provider (MAKE CONFIGURABLE)",
-        "urlAPI": "https://%s:2083/domainconnect_authorization" % ( request.host ),
+        "urlAPI": "https://%s:2087/domainconnect" % ( request.host ),
         "nameServers": nameservers,
     }
     return document

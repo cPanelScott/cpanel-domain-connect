@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request
+from flask import Response
 import subprocess
 import json
 app = Flask(__name__)
@@ -10,9 +11,7 @@ def discovery( domain ):
     if not domain:
         return "TODO this is a 404"
 
-    return json.dumps( domain, sort_keys=True, indent=4, separators=(",", ": ") )
-    return "Hello World moe! %s" % domain[0]["raw"]
-
+    return Response( json.dumps( domain, sort_keys=True, indent=4, separators=(",", ": ") ), mimetype='text/plan' )
 
 def fetchzone_records( domain ):
     zone_json = subprocess.check_output(["cpapi2", "--output=json", "ZoneEdit", "fetchzone_records", "domain=%s" % ( domain )])

@@ -9,6 +9,6 @@ To use this:
     # git clone <cloneurl>
     # ln -s cpanel-domain-connect domainconnect
     # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    # /usr/local/cpanel/3rdparty/bin/python2.7 get-pip.py
+    # /usr/local/cpanel/3rdparty/bin/python get-pip.py
     # rm get-pip.py
-    # /usr/local/cpanel/3rdparty/python/2.7/bin/pip install Flask
+    # pip install Flask

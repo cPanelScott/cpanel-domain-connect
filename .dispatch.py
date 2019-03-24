@@ -1,4 +1,4 @@
-#!/usr/local/cpanel/3rdparty/bin/python2.7
+#!/bin/python
 
 from os.path import dirname, abspath, join
 import sys

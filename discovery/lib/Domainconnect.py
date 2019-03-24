@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import request
+from flask import Flask, Response
 import subprocess
 import json
 app = Flask(__name__)
@@ -8,9 +7,9 @@ app = Flask(__name__)
 def discovery( domain ):
     domain = load_discovery( domain )
     if not domain:
-        return "TODO this is a 404"
+        return "TODO this is a 404\n"
 
-    return json.dumps( domain, sort_keys=True, indent=4, separators=(",", ": ") )
+    return Response(json.dumps( domain, sort_keys=True, indent=4, separators=(",", ": ") ), mimetype='application/json')
 
 def fetchzone_records( domain ):
     zone_json = subprocess.check_output(["whmapi1", "--output=json", "dumpzone", "domain=%s" % ( domain )])

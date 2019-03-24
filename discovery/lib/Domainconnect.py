@@ -11,8 +11,6 @@ def discovery( domain ):
         return "TODO this is a 404"
 
     return json.dumps( domain, sort_keys=True, indent=4, separators=(",", ": ") )
-    return "Hello World moe! %s" % domain[0]["raw"]
-
 
 def fetchzone_records( domain ):
     zone_json = subprocess.check_output(["whmapi1", "--output=json", "dumpzone", "domain=%s" % ( domain )])
@@ -20,19 +18,23 @@ def fetchzone_records( domain ):
     if not zone["metadata"]["result"]:
         return
 
-    return zone["data"]["zone"]
+    return zone["data"]["zone"][0]["record"]
 
 def load_discovery( domain ):
     zone = fetchzone_records( domain )
     if not zone:
         return False
 
+    nameservers = []
+    for rr in filter( lambda x: x.has_key("type") and x["type"] == "NS", zone ):
+       nameservers.append( rr["nsdname"] )
+
     document = {
         "providerId": "cpanel.net",
         "providerName": "cPanel L.L.C.",
         "providerDisplayName": "cPanel DNS Provider (MAKE CONFIGURABLE)",
         "urlAPI": "somethingTODO",
-        "nameServers": [ "one", "two" ]
+        "nameServers": nameservers,
     }
     return document
 '''

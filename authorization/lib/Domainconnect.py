@@ -24,14 +24,19 @@ def load_discovery( domain ):
     if not zone:
         return False
 
+    nameservers = []
+    for rr in filter( lambda x: x["type"] == "NS", zone ):
+       nameservers.append( rr["nsdname"] )
+
     document = {
         "providerId": "cpanel.net",
         "providerName": "cPanel L.L.C.",
         "providerDisplayName": "cPanel DNS Provider (MAKE CONFIGURABLE)",
         "urlAPI": "somethingTODO",
-        "nameServers": [ "one", "two" ]
+        "nameServers": nameservers,
     }
     return document
+
 '''
 This are all examples of entries you'll find in the zone['cpanelresult']['data'] array
          {

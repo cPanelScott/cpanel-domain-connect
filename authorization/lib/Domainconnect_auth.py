@@ -47,9 +47,9 @@ def fetchzone_records( domain ):
     zone = json.loads( zone_json )
     return zone["cpanelresult"]["data"]
 
-def ConvertZoneToDC( domain, zone ):
+def ConvertcPRecordsToDC( domain, cPrecords ):
     dc_zone = list()
-    for x in zone:
+    for x in cPrecords:
         rr = dict()
         rr["name"] = re.sub('\.?' + re.escape( domain + '.' ), '', x["name"] ) or "@"
         if x["type"] == "A" or x["type"] == "AAAA":

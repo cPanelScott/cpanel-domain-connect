@@ -115,7 +115,7 @@ def ZoneTests():
 
 def TestZoneConvertingToDC(title, domain, from_cpanel, expected):
 
-    returned = Domainconnect_auth.ConvertZoneToDC( domain, from_cpanel )
+    returned = Domainconnect_auth.ConvertcPRecordsToDC( domain, from_cpanel )
     passed = False
 
     if expected == returned:

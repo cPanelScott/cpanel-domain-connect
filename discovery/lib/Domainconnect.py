@@ -1,7 +1,7 @@
 from flask import Flask, Response, request
 import subprocess
 import json
-from domainconnect.templates import get_template
+from DomainConnectApplyZone import DomainConnect
 app = Flask(__name__)
 
 @app.route("/v2/<domain>/settings")
@@ -14,7 +14,9 @@ def discovery( domain ):
 
 @app.route("/v2/domainTemplates/providers/<string:providerid>/services/<string:serviceid>")
 def template( providerid, serviceid ):
-    return Response(json.dumps( get_template( providerid, serviceid ).template, sort_keys=True, indent=4, separators=(",", ": ") ), mimetype="application/json")
+    dc = DomainConnect( providerid, serviceid )
+    #TODO return template JSON
+    return ""
 
 def fetchzone_records( domain ):
     zone_json = subprocess.check_output(["whmapi1", "--output=json", "dumpzone", "domain=%s" % ( domain )])

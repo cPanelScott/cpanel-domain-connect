@@ -1,3 +1,6 @@
 [submodule "Templates"]
 	path = Templates
 	url = https://github.com/Domain-Connect/Templates.git
+[submodule "DomainConnectApplyZone"]
+	path = DomainConnectApplyZone
+	url = https://github.com/Domain-Connect/DomainConnectApplyZone.git

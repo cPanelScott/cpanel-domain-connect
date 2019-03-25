@@ -51,7 +51,11 @@ def ConvertcPRecordsToDC( domain, cPrecords ):
     dc_zone = list()
     for x in cPrecords:
         rr = dict()
-        rr["name"] = re.sub('\.?' + re.escape( domain + '.' ), '', x["name"] ) or "@"
+        try:
+            rr["name"] = re.sub('\.?' + re.escape( domain + '.' ), '', x["name"] ) or "@"
+        except KeyError:
+            continue
+
         if x["type"] == "A" or x["type"] == "AAAA":
             rr["type"] = x["type"]
             rr["data"] = x["address"]
@@ -79,7 +83,7 @@ def ConvertcPRecordsToDC( domain, cPrecords ):
             rr["priority"] = int(x["preference"])
             dc_zone.append( rr )
         elif x["type"] == "SRV":
-            parts = x["name"].split(".", 2)
+            parts = rr["name"].split(".", 2)
             if parts[0][0] != '_' or parts[1][0] != '_':
                 continue
 
@@ -91,7 +95,7 @@ def ConvertcPRecordsToDC( domain, cPrecords ):
             rr["service"] = parts[0][1:]
             rr["weight"] = int(x["weight"])
             rr["port"] = int(x["port"])
-            rr["name"] = re.sub('\.?' + re.escape( domain + '.' ), '', parts[2]) or "@"
+            rr["name"] = parts[2] if len(parts) == 3 else "@"
             dc_zone.append( rr )
 
     return dc_zone

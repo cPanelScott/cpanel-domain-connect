@@ -11,6 +11,6 @@ sys.path.append('/usr/local/cpanel/3rdparty/python/2.7/lib/python2.7/site-packag
 sys.path.append('/usr/local/cpanel/base/3rdparty/cpanel-domain-connect')
 
 from wsgiref.handlers import CGIHandler
-from Domainconnect import app
+from Domainconnect_disc import app
 
 CGIHandler().run(app)

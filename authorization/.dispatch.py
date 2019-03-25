@@ -11,6 +11,6 @@ CODE_DIR = abspath(join(THIS_DIR, '/usr/local/cpanel/base/3rdparty/cpanel-domain
 sys.path.append(CODE_DIR)
 
 from wsgiref.handlers import CGIHandler
-from Domainconnect import app
+from Domainconnect_auth import app
 
 CGIHandler().run(app)

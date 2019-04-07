@@ -5,36 +5,43 @@ from DomainConnectApplyZone import DomainConnect
 import subprocess
 import json
 import re
+import sys
 app = Flask(__name__)
 
 @app.route("/v2/domainTemplates/providers/<string:providerid>/services/<string:serviceid>/apply")
 def apply( providerid, serviceid ):
     confirm = request.args.get("confirm")
+    dc = DomainConnect( providerid, serviceid )
+    #TODO catch the error
+
+    #Validation (how much of this can be handled by dc?
+
+    domain = request.args.get('domain')
+    if not domain:
+        return "URL is missing required parameters. Please notify Service Provider"
+    if not fetchzone_records( domain ):
+        #TODO sanitize the domain SECURITY
+        return "The domain %s is not on this cPanel account. Please go back to the Service Provider and try again with a different cPanel account" % ( domain )
+
+    host = request.args.get('host')
+    redirect_uri = request.args.get("redirect_uri")
+    state = request.args.get("state")
+    providername = request.args.get("providerName")
+    groupid = request.args.get("groupId")
+    sig = request.args.get("sig")
+
+    if dc.IsSignatureRequired():
+        #TODO do
+        return "Error: Template requires signature, and this is unimplemented\n"
+
     if not confirm:
-        dc = DomainConnect( providerid, serviceid )
-        #TODO catch the error
-
-        domain = request.args.get('domain')
-        if not domain:
-            return "URL is missing required parameters. Please notify Service Provider"
-
-        host = request.args.get('host')
-        redirect_uri = request.args.get("redirect_uri")
-        state = request.args.get("state")
-        providername = request.args.get("providerName")
-        groupid = request.args.get("groupId")
-        sig = request.args.get("sig")
-
-        if dc.is_signed_required():
-            #TODO do
-            return "Error: Template requires signature, and this is unimplemented\n"
-
         location_offset = get_index( request.url, '/', 3 )
-        confirm_url = (request.url[:location_offset] + ":2083" + request.url[location_offset:]).replace(".dispatch.py", "") + "&confirm=1"
+        confirm_url = (request.url[:location_offset] + ":2083" + request.url[location_offset:]).replace("/.dispatch.py", "") + "&confirm=1"
         return "Are you sure? If so, please go to: %s" % ( confirm_url )
     else:
     #def Apply(self, zone_records, domain, host, params, groupId=None, qs=None, sig=None, key=None):
-        return "Now I'm ready to rumble\n"
+        records = ConvertcPRecordsToDC( domain, fetchzone_records( domain ) )
+        return "I see the following records\n" + json.dumps( records, sort_keys=True, indent=4, separators=(',', ': ') )
 
 def get_index(input_string, sub_string, ordinal):
     current = -1

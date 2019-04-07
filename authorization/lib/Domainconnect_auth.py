@@ -44,7 +44,8 @@ def apply( providerid, serviceid ):
         try:
             new = dc.Apply( records, domain, host, list(), groupid )
         #except MissingParameter: Not defind
-        #    return "Missing a parameter"
+        except:
+            return "Missing a parameter"
         return "I see the following records\n" + json.dumps( new, sort_keys=True, indent=4, separators=(',', ': ') )
 
 def get_index(input_string, sub_string, ordinal):

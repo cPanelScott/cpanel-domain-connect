@@ -23,7 +23,7 @@ def apply( providerid, serviceid ):
         #TODO sanitize the domain SECURITY
         return "The domain %s is not on this cPanel account. Please go back to the Service Provider and try again with a different cPanel account" % ( domain )
 
-    host = request.args.get('host')
+    host = request.args.get('host') #TODO can this be empty? Currently causing an exception in Apply when it is.
     redirect_uri = request.args.get("redirect_uri")
     state = request.args.get("state")
     providername = request.args.get("providerName")
@@ -41,7 +41,11 @@ def apply( providerid, serviceid ):
     else:
     #def Apply(self, zone_records, domain, host, params, groupId=None, qs=None, sig=None, key=None):
         records = ConvertcPRecordsToDC( domain, fetchzone_records( domain ) )
-        return "I see the following records\n" + json.dumps( records, sort_keys=True, indent=4, separators=(',', ': ') )
+        try:
+            new = dc.Apply( records, domain, host, list(), groupid )
+        #except MissingParameter: Not defind
+        #    return "Missing a parameter"
+        return "I see the following records\n" + json.dumps( new, sort_keys=True, indent=4, separators=(',', ': ') )
 
 def get_index(input_string, sub_string, ordinal):
     current = -1

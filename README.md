@@ -1,6 +1,7 @@
 This code was developed as part of the CloudFest 2019 Hackathon.
 
 * It does not work with currently available versions of cPanel.
+* If you're internal to cPanel, it's using so_support_dispatch branch of cPanelScott/cpanel-domain-connect.git or 11.81.9006.2
 * It is a work in progress, under significant developmennt.
 
 To use this:
@@ -13,3 +14,12 @@ To use this:
     # /usr/local/cpanel/3rdparty/bin/python get-pip.py
     # rm get-pip.py
     # pip install Flask
+
+The followings paths sorta work:
+
+Non-Authenticated:
+https://IP:2087/domainconnect/v2/car.com/settings (The domain must exist as a domain in WHM)
+https://IP:2087/domainconnect/v2/domainTemplates/providers/exampleservice.domainconnect.org/services/template2
+
+Requires authentication with cPanel account:
+https://IP:2083/3rdparty/domainconnect_authorization/v2/domainTemplates/providers/godaddy.com/services/plesk/apply

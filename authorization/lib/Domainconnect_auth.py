@@ -16,21 +16,21 @@ def apply( providerid, serviceid ):
 
     #Validation (how much of this can be handled by dc?
 
+    #TODO sanitize the domain SECURITY
     domain = request.args.get('domain')
     if not domain:
         return "URL is missing required parameters. Please notify Service Provider"
     if not fetchzone_records( domain ):
-        #TODO sanitize the domain SECURITY
         return "The domain %s is not on this cPanel account. Please go back to the Service Provider and try again with a different cPanel account" % ( domain )
 
-    host = request.args.get('host') #TODO can this be empty? Currently causing an exception in Apply when it is.
+    host = request.args.get('host')
     redirect_uri = request.args.get("redirect_uri")
     state = request.args.get("state")
     providername = request.args.get("providerName")
     groupid = request.args.get("groupId")
     sig = request.args.get("sig")
 
-    if dc.IsSignatureRequired():
+    if dc.is_sig_required():
         #TODO do
         return "Error: Template requires signature, and this is unimplemented\n"
 
@@ -39,14 +39,17 @@ def apply( providerid, serviceid ):
         confirm_url = (request.url[:location_offset] + ":2083" + request.url[location_offset:]).replace("/.dispatch.py", "") + "&confirm=1"
         return "Are you sure? If so, please go to: %s" % ( confirm_url )
     else:
-    #def Apply(self, zone_records, domain, host, params, groupId=None, qs=None, sig=None, key=None):
+    #def apply_template(self, zone_records, domain, host, params, groupId=None, qs=None, sig=None, key=None):
         records = ConvertcPRecordsToDC( domain, fetchzone_records( domain ) )
         try:
-            new = dc.Apply( records, domain, host, list(), groupid )
-        #except MissingParameter: Not defind
-        except:
-            return "Missing a parameter"
-        return "I see the following records\n" + json.dumps( new, sort_keys=True, indent=4, separators=(',', ': ') )
+            (new_records, deleted_records, final_records) = dc.apply_template( records, domain, host, request.args, groupid )
+        #except MissingParameter:
+        #    return "Missing parameter. Please try again"
+        except Exception as ex:
+            if type(ex).__name__ == "MissingParameter": #There has to be a better way
+                return "You're missing some required parameters: %s" % ( ex )
+            return "Exception while applying template: %s" % ( type(ex).__name__ )
+        return Response( "I see the following records\n" + json.dumps( { "new": new_records, "deleted": deleted_records, "final": final_records }, sort_keys=True, indent=4, separators=(',', ': ') ), mimetype="application/json" )
 
 def get_index(input_string, sub_string, ordinal):
     current = -1

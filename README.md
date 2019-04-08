@@ -22,4 +22,4 @@ https://IP:2087/domainconnect/v2/car.com/settings (The domain must exist as a do
 https://IP:2087/domainconnect/v2/domainTemplates/providers/exampleservice.domainconnect.org/services/template2
 
 Requires authentication with cPanel account:
-https://IP:2083/3rdparty/domainconnect_authorization/v2/domainTemplates/providers/godaddy.com/services/plesk/apply
+https://IP:2083/3rdparty/domainconnect_authorization/v2/domainTemplates/providers/exampleservice.domainconnect.org/services/template1/apply?domain=car.com&IP=1.1.1.1&RANDOMTEXT=jibberjabber
